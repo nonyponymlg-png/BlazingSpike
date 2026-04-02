@@ -1,4 +1,3 @@
-#include "Neuron.cpp"
 #include "Synapse.cpp"
 #include <vector>
 
@@ -7,6 +6,7 @@ private:
     int numNeurons;
     std::vector<Neuron*> neurons;
     std::vector<Synapse*> synapses;
+    std::vector<float> neuronInputs;
     
 public:
     Brain(int _numNeurons) {
@@ -14,6 +14,7 @@ public:
         
         for (int i = 0; i < numNeurons; i++) {
             neurons.push_back(new Neuron(0.0, 1.0, 0.0, 0.9));
+            neuronInputs.push_back(0.0);
         }
     }
     
@@ -25,18 +26,26 @@ public:
     }
     
     void update() {
+        // Step 1: Update neurons (integrate inputs and check for spikes)
+        for (int i = 0; i < numNeurons; i++) {
+            neurons[i]->update(neuronInputs[i]);
+            neuronInputs[i] = 0.0;  // Reset input for next cycle
+        }
+        
+        // Step 2: Process spikes through synapses (while spike flag is still 1)
         for (Synapse* synapse : synapses) {
             synapse->update();
         }
         
+        // Step 3: Reset neurons that spiked
         for (Neuron* neuron : neurons) {
-            neuron->update(0.0);  // External input can be added here
+            neuron->reset();
         }
     }
     
     void stimulateNeuron(int neuronIdx, float input) {
         if (neuronIdx >= 0 && neuronIdx < numNeurons) {
-            neurons[neuronIdx]->v += input;
+            neuronInputs[neuronIdx] += input;
         }
     }
     
