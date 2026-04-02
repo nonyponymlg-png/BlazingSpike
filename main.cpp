@@ -11,7 +11,6 @@ int main()
     std::cout << "Created brain with " << myBrain.getNumNeurons() << " neurons" << std::endl;
     
     // Create a network topology with synapses
-    // Connect neurons in a chain-like structure with varying weights
     myBrain.connectNeurons(0, 1, 0.5);   // Neuron 0 -> Neuron 1 (weight 0.5)
     myBrain.connectNeurons(1, 2, 0.6);   // Neuron 1 -> Neuron 2 (weight 0.6)
     myBrain.connectNeurons(2, 3, 0.7);   // Neuron 2 -> Neuron 3 (weight 0.7)
@@ -31,11 +30,12 @@ int main()
         // Provide pulsed input to neuron 0 (every 20 time steps)
         float externalInput = (t % 20 == 0) ? 0.8 : 0.0;
         
+        // Stimulate BEFORE update
         if (externalInput > 0) {
             myBrain.stimulateNeuron(0, externalInput);
         }
         
-        // Update the entire brain (process spikes through synapses, update neurons)
+        // Update the entire brain
         myBrain.update();
         
         // Display network state every 10 time steps
