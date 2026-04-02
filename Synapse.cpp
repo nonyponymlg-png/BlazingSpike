@@ -1,3 +1,5 @@
+#include "Neuron.cpp"
+
 class Synapse {
     Neuron* n1;
     Neuron* n2;
